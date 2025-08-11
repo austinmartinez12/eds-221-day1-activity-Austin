@@ -1,0 +1,65 @@
+---
+title: "stl_lead_inequity"
+format: html
+editor: visual
+---
+
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(here)
+
+# Read in data
+stl_lead <- read.csv(here::here("data", "stl_blood_lead.csv"))
+
+# Lower case the variables
+names(stl_lead)
+stl_lead <- stl_lead %>% janitor::clean_names()
+names(stl_lead)
+
+# Summary Stats
+skimr::skim(stl_lead)
+head(stl_lead)
+dim(stl_lead)
+
+
+```
+
+```{r}
+#read in data
+stl_lead_prop <- read.csv(here::here("data", "stl_blood_lead.csv")) 
+
+#create new collumn
+stl_lead_prop <- stl_lead_prop %>% dplyr::mutate(prop_white = white / totalPop *100)
+```
+
+```{r}
+
+#make a scatter plot
+stl_lead_prop_scatplot <- ggplot(data= stl_lead_prop, aes(x= pctElevated, y= prop_white, col = pctElevated)) +
+  geom_point() + 
+  theme_minimal() +
+  labs(title = "Percent of White Children with Elevaded Blood Levels",
+       x= "pctElevated",
+       y= "prop_white")
+stl_lead_prop_scatplot
+
+#makr a histogram
+stl_lead_prop_hist <- ggplot(data= stl_lead_prop, aes(x= pctElevated, fill = "red")) +
+  geom_histogram() + 
+  theme_minimal() +
+  labs(title = "Histogram of pctElevated",
+       x= "pctElevated")
+stl_lead_prop_hist
+```
+
+```{r}
+#export Histogram
+ggsave(here::here("figs", "stl_lead_prop_hist.png"), height = 6, width = 7)
+
+#export scatter plot
+ggsave(here::here("figs", "stl_lead_prop_scatplot.png"), height = 6, width = 7)
+
+```
+
